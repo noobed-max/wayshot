@@ -236,15 +236,30 @@ impl WayshotConnection {
     /// Helper function/wrapper that uses the OpenGL extension OES_EGL_image to convert the EGLImage obtained from [`WayshotConnection::capture_output_frame_eglimage`]
     /// into a OpenGL texture.
     /// - The caller is supposed to setup everything required for the texture binding. An example call may look like:
-    /// ```
-    /// gl::BindTexture(gl::TEXTURE_2D, self.gl_texture);
-    /// gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
-    /// wayshot_conn
-    ///     .bind_output_frame_to_gl_texture(
+    /// ```no_run
+    ///     // Initialize the WayshotConnection
+    ///     let wayshot_conn = WayshotConnection::new()?;
+    ///     Create an OpenGL texture with proper setup
+    ///         let mut gl_texture: GLuint = 0;
+    ///         unsafe {
+    ///     // Generate a new texture
+    ///     gl::GenTextures(1, &mut gl_texture);
+    /// 
+    ///     // Bind the texture for configuration
+    ///     gl::BindTexture(gl::TEXTURE_2D, gl_texture);
+    /// 
+    ///     // Set texture parameters for proper display
+    ///     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as i32);
+    ///     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as i32);
+    ///     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
+    ///     gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
+    /// 
+    ///     // Capture Wayland output to the configured texture
+    ///     wayshot_conn.bind_output_frame_to_gl_texture(
     ///         true,
-    ///        &wayshot_conn.get_all_outputs()[0].wl_output,
-    ///        None)
-    ///```
+    ///         &wayshot_conn.get_all_outputs()[0].wl_output,
+    ///         None)
+    /// ```
     /// # Parameters
     /// - `cursor_overlay`: A boolean flag indicating whether the cursor should be included in the capture.
     /// - `output`: Reference to the `WlOutput` from which the frame is to be captured.
